@@ -51,11 +51,21 @@ router.get('/contacts/:id', (req, res) => {
 
 router.patch('/contacts/:id/edit',(req,res)=>{
   const{id}=req.params
-  const{address}=req.body
-  
-  UserModel.findByIdAndUpdate(id,{$addToSet:{address}},{new:true})
+  const{firstName,lastName,address}=req.body
+  // {
+  //   "$addToSet": { "data": { "$each": newData } },
+  //   "$set": { 
+  //      "lastTxn": lastTxn,
+  //      "updatedAt": new Date()
+  //   }
+  // }
+  UserModel.findByIdAndUpdate(id,{$set:{firstName,lastName}},{new:true})
   .then((response)=>{
     res.status(200).json(response)
+    UserModel.findByIdAndUpdate(id,{$addToSet:{address}},{new:true})
+    .then((response)=>{
+      res.status(200).json(response)
+    })
   })
   .catch((err)=>{
     res.status(500).json({
